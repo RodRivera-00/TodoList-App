@@ -36,7 +36,6 @@ export default async function Login(
 				message: "Username or password is incorrect.",
 			});
 		}
-		console.log(result);
 	} else {
 		res.status(200).json({
 			error: true,

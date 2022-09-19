@@ -1,0 +1,25 @@
+{
+	"users": [
+		{
+			"id": 1,
+			"username": "Username",
+			"password": "Password",
+			"token": null
+		}
+	],
+	"todo": [
+		{
+			"id": 1,
+			"userId": 1,
+			"text": "This is a sample to-do"
+		}
+	],
+	"comments": [
+		{
+			"id": 1,
+			"todoId": 1,
+			"userId": 1,
+			"text": "This is a sample comment"
+		}
+	]
+}

@@ -1,5 +1,5 @@
 import type { AppProps } from "next/app";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 //ChakraUI
 import { ChakraProvider } from "@chakra-ui/react";
@@ -18,28 +18,31 @@ const breakpoints = {
 
 const theme = extendTheme({ fonts, breakpoints });
 
+//Context
+interface Context {
+	userData?: User;
+	setUserData?: React.Dispatch<React.SetStateAction<User | undefined>>;
+}
+export const UserContext = React.createContext<Context>({});
+
 //Local
 import { User, Token } from "../types/user";
 
 function MyApp({ Component, pageProps }: AppProps) {
-	const [userToken, setUserToken] = useState<Token>();
+	const [userData, setUserData] = useState<User>();
 	useEffect(() => {
 		//Check if userToken is undefined
-		if (userToken === undefined) {
-			//Check if there is a token on localStorage
-			if (localStorage.token !== undefined) {
-				//If available, set token to userToken
-				setUserToken({ token: localStorage.token });
-			}
-		} else {
+		if (userData !== undefined) {
 			//Set the state token to localStorage
-			localStorage.setItem("token", userToken.token);
+			localStorage.token = userData.token;
 		}
-	}, [userToken]);
+	}, [userData]);
 
 	return (
 		<ChakraProvider theme={theme}>
-			<Component {...pageProps} />
+			<UserContext.Provider value={{ userData, setUserData }}>
+				<Component {...pageProps} />
+			</UserContext.Provider>
 		</ChakraProvider>
 	);
 }

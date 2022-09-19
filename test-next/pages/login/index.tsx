@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { useRouter } from "next/router";
 //Chakra UI
 import { Stack, Box, Text, Input, Button } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
@@ -47,6 +47,7 @@ const LoginPage = () => {
 	const [error, setError] = useState<UserLoginErrors>();
 	const [isLoading, setLoading] = useState<boolean>(false);
 	const toast = useToast();
+	const router = useRouter();
 	const changeLogin = (type: keyof UserLogin, value: string) => {
 		//Save data to state
 		const newData = { ...loginData };
@@ -115,7 +116,10 @@ const LoginPage = () => {
 					isClosable: true,
 					position: "top",
 				});
+				//Save as token
+				localStorage.token = response.token;
 				//Redirect to another page
+				router.push("/");
 			}
 		}
 	};

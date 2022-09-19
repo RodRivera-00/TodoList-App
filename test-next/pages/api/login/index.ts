@@ -23,6 +23,8 @@ export default async function Login(
 		if (result.length === 1) {
 			const user: User = result[0];
 			//Set JWT token
+			delete user.password;
+			delete user.token;
 			const token = jwt.sign(user, process.env.JWT_SECRET || "", {
 				expiresIn: "6h",
 			});

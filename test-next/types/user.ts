@@ -1,7 +1,8 @@
 export interface User {
 	id: number;
 	username: string;
-	token: string;
+	password?: string;
+	token?: string;
 }
 export interface UserLogin {
 	username: string;
@@ -19,4 +20,9 @@ export interface LoginResponse {
 	error: boolean;
 	message: string;
 	token?: string;
+}
+export interface HomeResponse {
+	error: boolean;
+	message: string;
+	userData?: User;
 }

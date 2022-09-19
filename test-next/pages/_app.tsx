@@ -30,14 +30,6 @@ import { User, Token } from "../types/user";
 
 function MyApp({ Component, pageProps }: AppProps) {
 	const [userData, setUserData] = useState<User>();
-	useEffect(() => {
-		//Check if userToken is undefined
-		if (userData !== undefined) {
-			//Set the state token to localStorage
-			localStorage.token = userData.token;
-		}
-	}, [userData]);
-
 	return (
 		<ChakraProvider theme={theme}>
 			<UserContext.Provider value={{ userData, setUserData }}>

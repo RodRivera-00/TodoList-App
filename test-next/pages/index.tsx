@@ -1,13 +1,15 @@
 import { useRouter } from "next/router";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 
 //ChakraUI
 import { Box, Button, Flex, Stack, Text, useToast } from "@chakra-ui/react";
 
 //Local
 import { HomeResponse } from "../types/user";
+import { Todo } from "../types/todo";
 import { UserContext } from "./_app";
 import NavBar from "../components/NavBar";
+import Task from "../components/Task";
 const theme = {
 	container: {
 		width: "1200px",
@@ -26,14 +28,11 @@ const theme = {
 		fontSize: "30px",
 		fontWeight: 700,
 	},
-	task: {
-		padding: "20px",
-		border: "1px solid black",
-	},
 };
 
 const Home = () => {
 	const { userData, setUserData } = useContext(UserContext);
+	const [tasks, setTasks] = useState<Todo[]>([]);
 	const toast = useToast();
 	const router = useRouter();
 	const logout = () => {
@@ -42,8 +41,24 @@ const Home = () => {
 	};
 
 	useEffect(() => {
-		//Check if there is token available
+		async function fetchComments() {
+			try {
+				const fetchResult = await fetch("/data/todo");
+				const fetchJSON = await fetchResult.json();
+				setTasks(fetchJSON as Todo[]);
+			} catch (e: any) {
+				toast({
+					title: "Error",
+					description: e,
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+					position: "top",
+				});
+			}
+		}
 		async function fetchData() {
+			//Check if there is token available
 			if (localStorage.token === undefined) {
 				//Check if no token available
 				localStorage.clear();
@@ -73,6 +88,9 @@ const Home = () => {
 						//Save to userData
 						setUserData && setUserData(fetchJSON.userData);
 					}
+				} else {
+					//Fetch Tasks if userData is available
+					fetchComments();
 				}
 			}
 		}
@@ -84,9 +102,9 @@ const Home = () => {
 				<NavBar username={userData?.username || ""} logout={logout} />
 				<Stack justifyContent="center" alignItems="center">
 					<Text sx={theme.taskTitle}>Todo List</Text>
-					<Box w="full" sx={theme.task}>
-						Task
-					</Box>
+					{tasks.map((task) => (
+						<Task taskId={task.id} userId={task.userId} text={task.text} />
+					))}
 					<Button w="150px">Add new task</Button>
 				</Stack>
 			</Box>

@@ -160,19 +160,26 @@ const Home = () => {
 				<NavBar username={userData?.username || ""} logout={logout} />
 				<Stack justifyContent="center" alignItems="center">
 					<Text sx={theme.taskTitle}>Todo List</Text>
-					{tasks.map((task) => (
-						<Task taskId={task.id} userId={task.userId} text={task.text} />
-					))}
-					<Flex columnGap="10px">
+					<Flex columnGap="10px" padding="20px">
 						<Input
 							value={newTask}
 							onChange={(e) => setNewTask(e.target.value)}
 							background="white"
+							placeholder="New task name"
 						/>
 						<Button w="150px" onClick={addTask}>
 							Add new task
 						</Button>
 					</Flex>
+					{tasks.map((task) => (
+						<Task
+							taskId={task.id}
+							userId={task.userId}
+							text={task.text}
+							update={update}
+							setUpdate={setUpdate}
+						/>
+					))}
 				</Stack>
 			</Box>
 		</Flex>

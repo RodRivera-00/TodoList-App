@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Input, Text, useToast } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext, SetStateAction } from "react";
+import { UserContext } from "../../pages/_app";
 const theme = {
 	task: {
 		padding: "20px",
@@ -29,11 +30,112 @@ interface TaskProps {
 	taskId: number;
 	userId: number;
 	text: string;
+	update: number;
+	setUpdate: React.Dispatch<SetStateAction<number>>;
 }
 
-const Task = ({ taskId, text }: TaskProps) => {
+const Task = ({ taskId, text, update, setUpdate }: TaskProps) => {
+	const { userData } = useContext(UserContext);
 	const [comments, setComments] = useState<Comment[]>([]);
 	const toast = useToast();
+	const [comment, setComment] = useState<string>("");
+	const [editValue, setEditValue] = useState<string>();
+	const addComment = async () => {
+		//Add guard for empty
+		if (comment === "") {
+			toast({
+				title: "Field must not be empty",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+			return false;
+		}
+
+		try {
+			await fetch("/data/comments/", {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					userId: userData?.id,
+					todoId: taskId,
+					text: comment,
+				} as Comment),
+			});
+			//Give success toast
+			toast({
+				title: "Task added",
+				description: `You have commented ${comment}`,
+				status: "success",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+			setComment("");
+			//Re-render and fetch new tasks from /todo
+			setUpdate((value) => value + 1);
+		} catch (e: any) {
+			toast({
+				title: "Error",
+				description: e,
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+		}
+	};
+	const updateTask = async () => {
+		//Add guard for empty
+		if (editValue === "") {
+			toast({
+				title: "Field must not be empty",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+			return false;
+		}
+
+		try {
+			await fetch("/data/todo/" + taskId, {
+				method: "PATCH",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					text: editValue,
+				}),
+			});
+			//Give success toast
+			toast({
+				title: "Task updated",
+				description: `You have updated task to ${editValue}`,
+				status: "success",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+			setEditValue(undefined);
+			//Re-render and fetch new tasks from /todo
+			setUpdate((value) => value + 1);
+		} catch (e: any) {
+			toast({
+				title: "Error",
+				description: e,
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+		}
+	};
 	useEffect(() => {
 		async function fetchComments() {
 			try {
@@ -58,10 +160,35 @@ const Task = ({ taskId, text }: TaskProps) => {
 			}
 		}
 		fetchComments();
-	}, []);
+	}, [update]);
 	return (
 		<Box sx={theme.task}>
-			<Text sx={theme.taskTitle}>{text}</Text>
+			<Flex justifyContent="space-between">
+				{editValue !== undefined && (
+					<Flex w="full" marginRight="5px" columnGap="5px">
+						<Input
+							background="white"
+							value={editValue}
+							onChange={(e) => setEditValue(e.target.value)}
+						/>
+						<Button colorScheme="green" onClick={updateTask}>
+							Save
+						</Button>
+					</Flex>
+				)}
+				{editValue === undefined && (
+					<>
+						<Text sx={theme.taskTitle}>{text}</Text>
+						<Flex columnGap="5px">
+							<Button colorScheme="teal" onClick={() => setEditValue(text)}>
+								Edit
+							</Button>
+							<Button colorScheme="red">Delete</Button>
+						</Flex>
+					</>
+				)}
+			</Flex>
+
 			<Text sx={theme.commentTitle}>Comments</Text>
 			{comments.map((comment) => (
 				<CommentBox
@@ -69,12 +196,20 @@ const Task = ({ taskId, text }: TaskProps) => {
 					taskId={comment.todoId}
 					userId={comment.userId}
 					text={comment.text}
+					setUpdate={setUpdate}
 				/>
 			))}
 			{comments.length === 0 && <Text>No comments yet.</Text>}
 			<Flex mt="5px" columnGap="20px">
-				<Input background="white" />
-				<Button colorScheme="blue">Add comment</Button>
+				<Input
+					background="white"
+					value={comment}
+					onChange={(e) => setComment(e.target.value)}
+					placeholder="Add comment"
+				/>
+				<Button colorScheme="blue" onClick={addComment}>
+					Add comment
+				</Button>
 			</Flex>
 		</Box>
 	);

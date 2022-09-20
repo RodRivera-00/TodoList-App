@@ -37,6 +37,7 @@ const Task = ({ taskId, text }: TaskProps) => {
 	useEffect(() => {
 		async function fetchComments() {
 			try {
+				//Fetch comments with specific todoId
 				const fetchResult = await fetch(
 					"/data/comments?" +
 						new URLSearchParams({
@@ -70,7 +71,8 @@ const Task = ({ taskId, text }: TaskProps) => {
 					text={comment.text}
 				/>
 			))}
-			<Flex mt="20px" columnGap="20px">
+			{comments.length === 0 && <Text>No comments yet.</Text>}
+			<Flex mt="5px" columnGap="20px">
 				<Input background="white" />
 				<Button colorScheme="blue">Add comment</Button>
 			</Flex>

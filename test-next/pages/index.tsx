@@ -2,7 +2,15 @@ import { useRouter } from "next/router";
 import { useEffect, useContext, useState } from "react";
 
 //ChakraUI
-import { Box, Button, Flex, Stack, Text, useToast } from "@chakra-ui/react";
+import {
+	Box,
+	Button,
+	Flex,
+	Stack,
+	Text,
+	Input,
+	useToast,
+} from "@chakra-ui/react";
 
 //Local
 import { HomeResponse } from "../types/user";
@@ -33,15 +41,65 @@ const theme = {
 const Home = () => {
 	const { userData, setUserData } = useContext(UserContext);
 	const [tasks, setTasks] = useState<Todo[]>([]);
+	const [newTask, setNewTask] = useState<string>("");
+	const [update, setUpdate] = useState<number>(0);
 	const toast = useToast();
 	const router = useRouter();
 	const logout = () => {
 		localStorage.clear();
 		setUserData && setUserData(undefined);
 	};
+	const addTask = async () => {
+		//Add guard for empty
+		if (newTask === "") {
+			toast({
+				title: "Field must not be empty",
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+			return false;
+		}
+
+		try {
+			await fetch("/data/todo", {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					userId: userData?.id,
+					text: newTask,
+				} as Todo),
+			});
+			//Give success toast
+			toast({
+				title: "Task added",
+				description: `You have added ${newTask}`,
+				status: "success",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+			setNewTask("");
+			//Re-render and fetch new tasks from /todo
+			setUpdate((value) => value + 1);
+		} catch (e: any) {
+			toast({
+				title: "Error",
+				description: e,
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+		}
+	};
 
 	useEffect(() => {
-		async function fetchComments() {
+		async function fetchTodo() {
 			try {
 				const fetchResult = await fetch("/data/todo");
 				const fetchJSON = await fetchResult.json();
@@ -90,12 +148,12 @@ const Home = () => {
 					}
 				} else {
 					//Fetch Tasks if userData is available
-					fetchComments();
+					fetchTodo();
 				}
 			}
 		}
 		fetchData();
-	}, [userData]);
+	}, [userData, update]);
 	return (
 		<Flex width="full" justifyContent="center">
 			<Box sx={theme.container}>
@@ -105,7 +163,16 @@ const Home = () => {
 					{tasks.map((task) => (
 						<Task taskId={task.id} userId={task.userId} text={task.text} />
 					))}
-					<Button w="150px">Add new task</Button>
+					<Flex columnGap="10px">
+						<Input
+							value={newTask}
+							onChange={(e) => setNewTask(e.target.value)}
+							background="white"
+						/>
+						<Button w="150px" onClick={addTask}>
+							Add new task
+						</Button>
+					</Flex>
 				</Stack>
 			</Box>
 		</Flex>

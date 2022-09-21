@@ -194,7 +194,6 @@ const Task = ({ taskId, text, update, setUpdate }: TaskProps) => {
 						})
 				);
 				const fetchJSON = await fetchResult.json();
-				console.log(fetchJSON);
 				setComments(fetchJSON as Comment[]);
 			} catch (e: any) {
 				toast({

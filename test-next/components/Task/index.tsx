@@ -136,6 +136,38 @@ const Task = ({ taskId, text, update, setUpdate }: TaskProps) => {
 			});
 		}
 	};
+	const deleteTask = async () => {
+		try {
+			//Delete Task
+			await fetch("/data/todo/" + taskId, {
+				method: "DELETE",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			});
+			//Give success toast
+			toast({
+				title: "Task deleted",
+				description: `You have deleted a task`,
+				status: "success",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+			//Re-render and fetch new tasks from /todo
+			setUpdate((value) => value + 1);
+		} catch (e: any) {
+			toast({
+				title: "Error",
+				description: e,
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+		}
+	};
 	useEffect(() => {
 		async function fetchComments() {
 			try {
@@ -147,6 +179,7 @@ const Task = ({ taskId, text, update, setUpdate }: TaskProps) => {
 						})
 				);
 				const fetchJSON = await fetchResult.json();
+				console.log(fetchJSON);
 				setComments(fetchJSON as Comment[]);
 			} catch (e: any) {
 				toast({
@@ -183,22 +216,28 @@ const Task = ({ taskId, text, update, setUpdate }: TaskProps) => {
 							<Button colorScheme="teal" onClick={() => setEditValue(text)}>
 								Edit
 							</Button>
-							<Button colorScheme="red">Delete</Button>
+							<Button colorScheme="red" onClick={deleteTask}>
+								Delete
+							</Button>
 						</Flex>
 					</>
 				)}
 			</Flex>
 
 			<Text sx={theme.commentTitle}>Comments</Text>
-			{comments.map((comment) => (
-				<CommentBox
-					commentId={comment.id}
-					taskId={comment.todoId}
-					userId={comment.userId}
-					text={comment.text}
-					setUpdate={setUpdate}
-				/>
-			))}
+			{comments.map((comment) => {
+				return (
+					comment.todoId === taskId && (
+						<CommentBox
+							commentId={comment.id}
+							taskId={comment.todoId}
+							userId={comment.userId}
+							text={comment.text}
+							setUpdate={setUpdate}
+						/>
+					)
+				);
+			})}
 			{comments.length === 0 && <Text>No comments yet.</Text>}
 			<Flex mt="5px" columnGap="20px">
 				<Input

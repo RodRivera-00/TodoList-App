@@ -4,42 +4,15 @@
       "id": 1,
       "username": "Username",
       "password": "Password",
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJVc2VybmFtZSIsImlhdCI6MTY2MzcwMTA2MywiZXhwIjoxNjYzNzIyNjYzfQ.Bu_aZpbZBUU7OW058XL-2OYnmwIiM2M4u7oNkAMFPGE"
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJVc2VybmFtZSIsImlhdCI6MTY2Mzc0MTU1OSwiZXhwIjoxNjYzNzYzMTU5fQ.iUXaeTf9NKWX9ZZbvhPbNa9y1jM0X_YBHsjZvdx5diE"
     }
   ],
   "todo": [
     {
-      "id": 1,
       "userId": 1,
-      "text": "This is a sample to-do"
-    },
-    {
-      "userId": 1,
-      "text": "Sample task 2",
-      "id": 2
-    },
-    {
-      "userId": 1,
-      "text": "Sample task 3",
-      "id": 3
-    },
-    {
-      "userId": 1,
-      "text": "task 4",
-      "id": 4
-    },
-    {
-      "userId": 1,
-      "text": "task5",
-      "id": 5
+      "text": "Task 1",
+      "id": 1
     }
   ],
-  "comments": [
-    {
-      "id": 1,
-      "todoId": 1,
-      "userId": 1,
-      "text": "This is a sample comment"
-    }
-  ]
+  "comments": []
 }

@@ -37,7 +37,6 @@ const CommentBox = ({
 			});
 			return false;
 		}
-
 		try {
 			await fetch("/data/comments/" + commentId, {
 				method: "PATCH",
@@ -59,6 +58,37 @@ const CommentBox = ({
 				position: "top",
 			});
 			setEditValue(undefined);
+			//Re-render and fetch new tasks from /todo
+			setUpdate((value) => value + 1);
+		} catch (e: any) {
+			toast({
+				title: "Error",
+				description: e,
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
+		}
+	};
+	const deleteComment = async () => {
+		try {
+			await fetch("/data/comments/" + commentId, {
+				method: "DELETE",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			});
+			//Give success toast
+			toast({
+				title: "Comment deleted",
+				description: `You have deleted a comment`,
+				status: "success",
+				duration: 5000,
+				isClosable: true,
+				position: "top",
+			});
 			//Re-render and fetch new tasks from /todo
 			setUpdate((value) => value + 1);
 		} catch (e: any) {
@@ -97,7 +127,9 @@ const CommentBox = ({
 								<Button colorScheme="teal" onClick={() => setEditValue(text)}>
 									Edit
 								</Button>
-								<Button colorScheme="red">Delete</Button>
+								<Button colorScheme="red" onClick={deleteComment}>
+									Delete
+								</Button>
 							</Flex>
 						)}
 					</>

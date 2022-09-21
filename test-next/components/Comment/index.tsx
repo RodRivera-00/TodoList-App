@@ -1,5 +1,18 @@
-import { Box, Text, Button, Flex, Input, useToast } from "@chakra-ui/react";
-import { useEffect, useState, useContext, SetStateAction } from "react";
+import {
+	Box,
+	Text,
+	Button,
+	Flex,
+	Input,
+	AlertDialog,
+	AlertDialogBody,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogContent,
+	AlertDialogOverlay,
+	useToast,
+} from "@chakra-ui/react";
+import { useState, useContext, useRef, SetStateAction } from "react";
 import { UserContext } from "../../pages/_app";
 const theme = {
 	commentBox: {
@@ -24,7 +37,9 @@ const CommentBox = ({
 }: CommentBoxProps) => {
 	const { userData } = useContext(UserContext);
 	const [editValue, setEditValue] = useState<string>();
+	const [alertOpen, setAlertOpen] = useState<boolean>(false);
 	const toast = useToast();
+	const cancelRef = useRef(null);
 	const updateComment = async () => {
 		//Add guard for empty
 		if (editValue === "") {
@@ -127,9 +142,42 @@ const CommentBox = ({
 								<Button colorScheme="teal" onClick={() => setEditValue(text)}>
 									Edit
 								</Button>
-								<Button colorScheme="red" onClick={deleteComment}>
+								<Button colorScheme="red" onClick={() => setAlertOpen(true)}>
 									Delete
 								</Button>
+								<AlertDialog
+									isOpen={alertOpen}
+									leastDestructiveRef={cancelRef}
+									onClose={() => setAlertOpen(false)}
+								>
+									<AlertDialogOverlay>
+										<AlertDialogContent>
+											<AlertDialogHeader fontSize="lg" fontWeight="bold">
+												Delete Comment
+											</AlertDialogHeader>
+
+											<AlertDialogBody>
+												Are you sure to delete the comment?
+											</AlertDialogBody>
+
+											<AlertDialogFooter>
+												<Button
+													ref={cancelRef}
+													onClick={() => setAlertOpen(false)}
+												>
+													Cancel
+												</Button>
+												<Button
+													colorScheme="red"
+													onClick={deleteComment}
+													ml={3}
+												>
+													Delete
+												</Button>
+											</AlertDialogFooter>
+										</AlertDialogContent>
+									</AlertDialogOverlay>
+								</AlertDialog>
 							</Flex>
 						)}
 					</>

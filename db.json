@@ -4,15 +4,9 @@
       "id": 1,
       "username": "Username",
       "password": "Password",
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJVc2VybmFtZSIsImlhdCI6MTY2Mzc0MTU1OSwiZXhwIjoxNjYzNzYzMTU5fQ.iUXaeTf9NKWX9ZZbvhPbNa9y1jM0X_YBHsjZvdx5diE"
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJVc2VybmFtZSIsImlhdCI6MTY2Mzc0MTYxMSwiZXhwIjoxNjYzNzYzMjExfQ.ovyhAo3DvWIt1OdGxpuVcDDivYF0HJja5ozNOL14sWo"
     }
   ],
-  "todo": [
-    {
-      "userId": 1,
-      "text": "Task 1",
-      "id": 1
-    }
-  ],
+  "todo": [],
   "comments": []
 }

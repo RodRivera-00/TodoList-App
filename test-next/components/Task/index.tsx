@@ -1,5 +1,18 @@
-import { Box, Button, Flex, Input, Text, useToast } from "@chakra-ui/react";
-import { useEffect, useState, useContext, SetStateAction } from "react";
+import {
+	Box,
+	Button,
+	Flex,
+	Input,
+	Text,
+	AlertDialog,
+	AlertDialogBody,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogContent,
+	AlertDialogOverlay,
+	useToast,
+} from "@chakra-ui/react";
+import { useEffect, useState, useContext, useRef, SetStateAction } from "react";
 import { UserContext } from "../../pages/_app";
 const theme = {
 	task: {
@@ -40,6 +53,8 @@ const Task = ({ taskId, text, update, setUpdate }: TaskProps) => {
 	const toast = useToast();
 	const [comment, setComment] = useState<string>("");
 	const [editValue, setEditValue] = useState<string>();
+	const [alertOpen, setAlertOpen] = useState<boolean>(false);
+	const cancelRef = useRef(null);
 	const addComment = async () => {
 		//Add guard for empty
 		if (comment === "") {
@@ -216,9 +231,38 @@ const Task = ({ taskId, text, update, setUpdate }: TaskProps) => {
 							<Button colorScheme="teal" onClick={() => setEditValue(text)}>
 								Edit
 							</Button>
-							<Button colorScheme="red" onClick={deleteTask}>
+							<Button colorScheme="red" onClick={() => setAlertOpen(true)}>
 								Delete
 							</Button>
+							<AlertDialog
+								isOpen={alertOpen}
+								leastDestructiveRef={cancelRef}
+								onClose={() => setAlertOpen(false)}
+							>
+								<AlertDialogOverlay>
+									<AlertDialogContent>
+										<AlertDialogHeader fontSize="lg" fontWeight="bold">
+											Delete Comment
+										</AlertDialogHeader>
+
+										<AlertDialogBody>
+											Are you sure to delete the comment?
+										</AlertDialogBody>
+
+										<AlertDialogFooter>
+											<Button
+												ref={cancelRef}
+												onClick={() => setAlertOpen(false)}
+											>
+												Cancel
+											</Button>
+											<Button colorScheme="red" onClick={deleteTask} ml={3}>
+												Delete
+											</Button>
+										</AlertDialogFooter>
+									</AlertDialogContent>
+								</AlertDialogOverlay>
+							</AlertDialog>
 						</Flex>
 					</>
 				)}

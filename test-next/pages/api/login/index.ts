@@ -13,7 +13,7 @@ export default async function Login(
 	) {
 		const userData: UserLogin = req.body;
 		const checkLogin = await fetch(
-			"http://139.180.159.123:8081/users/?" +
+			"http://localhost:8081/users/?" +
 				new URLSearchParams({
 					username: userData.username,
 					password: userData.password,
@@ -31,7 +31,7 @@ export default async function Login(
 			//Save JWT Token
 			try {
 				//This can still be improved depending on the backend's error handling
-				await fetch("http://139.180.159.123:8081/users/" + user.id, {
+				await fetch("http://localhost:8081/users/" + user.id, {
 					method: "PATCH",
 					headers: {
 						Accept: "application/json",

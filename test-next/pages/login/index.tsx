@@ -126,7 +126,7 @@ const LoginPage = () => {
 	return (
 		<Stack direction="row">
 			<Stack sx={theme.loginContainer}>
-				<Text sx={theme.loginTitle}>AppEvolve Test Login</Text>
+				<Text sx={theme.loginTitle}>TodoList Test Login</Text>
 				<Stack sx={theme.loginForm}>
 					{error?.formError && (
 						<Text sx={theme.errorText}>{error.formError}</Text>

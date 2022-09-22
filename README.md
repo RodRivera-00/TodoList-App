@@ -1,4 +1,4 @@
-# AppEvolve-Test
+# TodoList
 
 This codebase is created using Next.js and json-server on Typescript
 

@@ -11,7 +11,7 @@ const nextConfig = {
 			},
 			{
 				source: "/data/comments/:path*",
-				destination: "http:/localhost:8081/comments/:path*",
+				destination: "http://localhost:8081/comments/:path*",
 			},
 		];
 	},
